@@ -1,0 +1,43 @@
+server:
+  port: 6060
+
+spring:
+  application:
+    name: @artifactId@
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_HOST:pigx-register}:${NACOS_PORT:8848}
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+  config:
+    import:
+      - optional:nacos:application-@profiles.active@.yml
+      - optional:nacos:${spring.application.name}-@profiles.active@.yml
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: ${MYSQL_USER:root}
+      password: ${MYSQL_PWD:593569}
+      url: jdbc:mysql://${MYSQL_HOST:pigx-mysql}:${MYSQL_PORT:3306}/${MYSQL_DB:pigxx_files}?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+
+security:
+  oauth2:
+    client:
+      client-id: pig
+      client-secret: pig
+      scope: server
+      ignore-urls:
+        - /css/**
+        - /error
+        - /actuator/**
+        - /v2/api-docs
+        - /files/**/**
+        - /files-biz
+
+file:
+  bucketName: s3demo # 上文创建的桶名称
+  local:
+    enable: true
+    base-path: /data
